@@ -57,7 +57,9 @@ define([
 	 */
 	SummaryDetailsPage.prototype._setContentMarkup = function () {
 		var products = this._products = this.getProducts(),
-		    product = null;
+		    product = null,
+		    summary,
+		    i;
 
 		// get the product hash (i.e. us_usb000kqnc)
 		if (this._code === null) {
@@ -65,9 +67,10 @@ define([
 		}
 
 		if (this._code) {
-			for (var i = 0; i < products.length; i++) {
+			for (i = 0; i < products.length; i++) {
 				if (this._code === products[i].source + '_' + products[i].code) {
 					product = products[i];
+					break;
 				}
 			}
 		} else if (products.length === 1) {
@@ -159,9 +162,9 @@ define([
 		    header, headerMarkup,
 		    info, infoMarkup;
 
-		el = document.createElement('div');
+		el = document.createElement('a');
 		el.className = this._options.hash + '-summary summary';
-		el.setAttribute('data-id', this._buildHash(product));
+		el.setAttribute('href', this._buildHash(product));
 
 		header = document.createElement('div');
 		header.className = 'header';
@@ -186,14 +189,7 @@ define([
 		el.appendChild(header);
 		el.appendChild(info);
 
-		// navigate to details page
-		Util.addEvent(el, 'click', this._updateHashOnSummaryClick);
-
 		return el;
-	};
-
-	SummaryDetailsPage.prototype._updateHashOnSummaryClick = function (e) {
-		window.location.hash = e.currentTarget.getAttribute('data-id');
 	};
 
 	/**
@@ -271,17 +267,6 @@ define([
 
 		// clean-up resources.
 	SummaryDetailsPage.prototype.destroy = function () {
-		var summaries, summary;
-
-		// unbind click handler ono summary sections
-		if (this._content) {
-			summaries = this._content.querySelectorAll('.summary');
-			for (var i = 0; i < summaries.length; i++) {
-				summary = summaries[i];
-				Util.removeEvent(summary, 'click', this._updateHashOnSummaryClick);
-			}
-		}
-
 		this._content = null;
 		this._products = null;
 		this._options = null;
