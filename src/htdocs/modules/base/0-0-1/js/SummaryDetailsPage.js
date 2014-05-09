@@ -58,7 +58,6 @@ define([
 	SummaryDetailsPage.prototype._setContentMarkup = function () {
 		var products = this._products = this.getProducts(),
 		    product = null,
-		    summary,
 		    i;
 
 		// get the product hash (i.e. us_usb000kqnc)
