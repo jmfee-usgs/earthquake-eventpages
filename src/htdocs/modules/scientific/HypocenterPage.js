@@ -299,7 +299,7 @@ HypocenterPage.prototype.getDetailsContent = function (product) {
   });
 
   if ((product.type === 'phase-data' || product.type === 'origin') &&
-      product.contents.hasOwnProperty('quakeml.xml')) {
+      product.contents && product.contents.hasOwnProperty('quakeml.xml')) {
     // build phase table
     tabListContents.push({
       title: 'Phases',
@@ -318,7 +318,7 @@ HypocenterPage.prototype.getDetailsContent = function (product) {
     });
   }
 
-  props = product.properties;
+  props = product.properties || {};
   originAuthor = props['origin-source'] || product.source;
   magnitudeAuthor = props['magnitude-source'] || product.source;
 
@@ -602,7 +602,8 @@ HypocenterPage.prototype.getFeString = function (product, callback) {
     // Find geoserve product that corresponds to the given (origin) product
     for (i = 0, len = geoProducts.length; i < len; i++) {
       testProduct = geoProducts[i];
-      if (testProduct.properties.eventsource === prodEventSource &&
+      if (testProduct.properties &&
+          testProduct.properties.eventsource === prodEventSource &&
           testProduct.properties.eventsourcecode === prodEventSourceCode) {
         geoserveProduct = testProduct;
         break;
@@ -626,7 +627,7 @@ HypocenterPage.prototype.getFeString = function (product, callback) {
 HypocenterPage.prototype.getOriginDetail = function (product) {
   var buf = [],
       formatter = this._options.formatter || new Formatter(),
-      p = product.properties,
+      p = product.properties || {},
       // required attributes for origins
       latitude = p.latitude,
       longitude = p.longitude,
@@ -731,7 +732,7 @@ HypocenterPage.prototype.getOriginDetail = function (product) {
 };
 
 HypocenterPage.prototype._getSummaryMarkup = function (product) {
-  var p = product.properties,
+  var p = product.properties || {},
       depth = p.depth,
       magnitude = p.magnitude,
       magnitudeType = p['magnitude-type'],

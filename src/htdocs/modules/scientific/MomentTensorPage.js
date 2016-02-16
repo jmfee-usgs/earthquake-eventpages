@@ -45,7 +45,8 @@ MomentTensorPage.prototype.getDetailsContent = function (product) {
 
   this._product = product;
 
-  author = product.properties['beachball-source'] || product.source;
+  author = (product.properties && product.properties['beachball-source']) ||
+      product.source;
 
   // set layout
   el.className = 'tensor-detail';
@@ -91,7 +92,8 @@ MomentTensorPage.prototype._getInfo = function (tensor) {
       magnitude = tensor.magnitude,
       percentDC = tensor.percentDC,
       depth = tensor.depth,
-      half_duration = tensor.product.properties.duration/2 || '&ndash;';
+      props = tensor.product.properties || {},
+      half_duration = props.duration/2 || '&ndash;';
 
   moment = (moment / tensor.scale).toFixed(3) +
       'e+' + tensor.exponent + ' ' + tensor.units;
