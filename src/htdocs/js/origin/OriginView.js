@@ -12,7 +12,10 @@ var Attribution = require('core/Attribution'),
     Xhr = require('util/Xhr');
 
 
-var _DEFAULTS = {};
+var _DEFAULTS = {
+  url: '/ws/geoserve/'
+};
+
 var NOT_REPORTED = '&ndash;';
 
 
@@ -24,7 +27,6 @@ var OriginView = function (options) {
       _formatter,
       _geoserve,
       _magnitudesView,
-      _phases,
       _phasesView,
       _region,
       _tabList,
@@ -35,19 +37,12 @@ var OriginView = function (options) {
 
   _initialize = function (options) {
     _formatter = options.formatter || Formatter();
-    _phases = options.phases || null;
     _geoserve = options.geoserve || null;
+    _url = options.url;
 
     // Bind to geoserve model change
     _region = Model();
     _region.on('change:regions', 'buildFeRegionView', _this);
-
-    if (options.eventConfig &&
-        options.eventConfig.hasOwnProperty('GEOSERVE_WS_URL')) {
-      _url = options.eventConfig.GEOSERVE_WS_URL;
-    } else {
-      _url = options.url;
-    }
   };
 
   _this.destroy = Util.compose(function () {
@@ -70,7 +65,6 @@ var OriginView = function (options) {
 
     _formatter = null;
     _geoserve = null;
-    _phases = null;
     _region = null;
     _url = null;
 
@@ -370,7 +364,8 @@ var OriginView = function (options) {
   _this.render = function () {
     var content,
         product,
-        quakeml;
+        quakeml,
+        type;
 
     // Destroy tablist if it already exists
     if (_tabList && _tabList.destroy) {
@@ -382,53 +377,57 @@ var OriginView = function (options) {
       tabs: []
     });
 
-    product = _this.model.get();
+    product = _this.model;
     if (product) {
-      content = _this.getOriginDetailTable(product);
+      content = _this.getOriginDetailTable(product.get());
       _tabList.addTab({
         'title': 'Origin Detail',
         'content': content
       });
+      type = product.get('type');
     } else {
       content = '<p class="alert error">' +
         'No Origin product exists.' +
         '</p>';
+      return;
     }
 
-    if (_phases) {
-      quakeml = _phases.getContent('quakeml.xml');
+    if (type === 'phase-data') {
+      quakeml = product.getContent('quakeml.xml');
 
       _phasesView = PhasesView({
         el: document.createElement('div'),
         model: quakeml,
-        product: _phases
+        product: product
       });
 
       _tabList.addTab({
         'title': 'Phases',
-        'content': _phasesView.el,
+        'content': function () {
+          _phasesView.render();
+          return _phasesView.el;
+        },
         onDestroy: function () {
           _phasesView.destroy();
-        },
-        onSelect: function () {
-          _phasesView.render();
+          _phasesView = null;
         }
       });
 
       _magnitudesView = MagnitudesView({
         el: document.createElement('div'),
         model: quakeml,
-        product: _phases
+        product: product
       });
 
       _tabList.addTab({
         'title': 'Magnitudes',
-        'content': _magnitudesView.el,
+        'content': function () {
+          _magnitudesView.render();
+          return _magnitudesView.el;
+        },
         onDestroy: function () {
           _magnitudesView.destroy();
-        },
-        onSelect: function () {
-          _magnitudesView.render();
+          _magnitudesView = null;
         }
       });
     }
