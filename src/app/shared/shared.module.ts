@@ -111,7 +111,8 @@ import { ShakemapMapOverlaysPipe } from './shakemap-map-overlays.pipe';
     KeysPipe,
     InteractiveMapOverlaysPipe,
     RegionInfoOverlaysPipe,
-    ShakemapMapOverlaysPipe
+    ShakemapMapOverlaysPipe,
+    ShakemapOverlaysPipe
   ],
   entryComponents: [
     DownloadDialogComponent
