@@ -7,6 +7,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "lib": ["es2017", "dom"],
+    "noEmitHelpers": true,
     "outDir": "./dist/out-tsc",
     "paths": {
       "@angular/*": ["../node_modules/@angular/*"],
