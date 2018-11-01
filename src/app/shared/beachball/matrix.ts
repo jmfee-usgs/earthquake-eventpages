@@ -462,7 +462,6 @@ _transpose = function(
  * @param n {Number}
  *        number of columns.
  */
-// @dynamic
 export class Matrix {
   // expose static methods.
   static col = _col;

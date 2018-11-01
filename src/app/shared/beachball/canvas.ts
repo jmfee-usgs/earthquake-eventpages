@@ -12,7 +12,6 @@
  *        Optional, default 100.
  *        Height of canvas, when options.canvas is null.
  */
-// @dynamic
 export class Canvas {
   context: any;
 

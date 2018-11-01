@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
-import { Tensor } from '@shared/beachball/tensor';
-import { Beachball } from '@shared/beachball/beachball';
+import { Tensor } from "@shared/beachball/tensor";
+import { zeroToTwoPi } from "@shared/beachball/zeroToTwoPi";
 
 /**
  * Display Moment Tensor beachball diagram
@@ -12,12 +12,12 @@ import { Beachball } from '@shared/beachball/beachball';
  */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'moment-tensor-axes',
-  styleUrls: ['./axes.component.scss'],
-  templateUrl: './axes.component.html'
+  selector: "moment-tensor-axes",
+  styleUrls: ["./axes.component.scss"],
+  templateUrl: "./axes.component.html"
 })
 export class AxesComponent {
-  columnsToDisplay = ['axis', 'value', 'plunge', 'azimuth'];
+  columnsToDisplay = ["axis", "value", "plunge", "azimuth"];
 
   @Input()
   tensor: Tensor;
@@ -45,7 +45,7 @@ export class AxesComponent {
         azimuth += Math.PI;
         plunge = plunge * -1;
       }
-      azimuth = Beachball.zeroToTwoPi(azimuth);
+      azimuth = zeroToTwoPi(azimuth);
 
       return {
         azimuth: (azimuth * 180) / Math.PI,

@@ -420,7 +420,6 @@ _z = function(v: Array<number>, value: number): number {
  * @param data {Array<Number>}
  *        array to wrap.
  */
-// @dynamic
 export class Vector {
   // static methods that act on arrays
   static add = _add;

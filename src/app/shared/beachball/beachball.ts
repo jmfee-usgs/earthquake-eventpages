@@ -3,6 +3,7 @@
 
 import { Canvas } from './canvas';
 import { Tensor } from './tensor';
+import { zeroToTwoPi } from './zeroToTwoPi';
 
 const _D2R = Math.PI / 180;
 const _EPSILON = 1e-16;
@@ -14,27 +15,7 @@ const _MERGE_THRESHOLD = 0.02;
 // threshold takeoff angle when polygons should be split.
 const _SPLIT_THRESHOLD = 85 * _D2R;
 
-let _0To2Pi, _axisCache, _getOption;
-
-/**
- * Make sure number is between 0 and 2pi.
- *
- * @param value {Number}
- *     angle in radians.
- * @return {Number}
- *     angle in radians, in the range [0, 2pi).
- */
-_0To2Pi = function(value) {
-  const twoPi = 2 * Math.PI;
-
-  while (value < 0) {
-    value += twoPi;
-  }
-  while (value >= twoPi) {
-    value -= twoPi;
-  }
-  return value;
-};
+let _axisCache, _getOption;
 
 /**
  * Compute trig values of axis.
@@ -63,7 +44,7 @@ _axisCache = function(axis) {
     azimuth += Math.PI;
   }
   // make azimuth in range [0, 2*PI)
-  azimuth = _0To2Pi(azimuth, 0, Math.PI * 2);
+  azimuth = zeroToTwoPi(azimuth);
 
   return {
     a: azimuth,
@@ -83,9 +64,7 @@ _getOption = function(options: any, name: string, defaultValue: any): any {
   return defaultValue;
 };
 
-// @dynamic
 export class Beachball {
-  static zeroToTwoPi = _0To2Pi;
 
   /**
    * Create and render a beachball.
@@ -310,7 +289,7 @@ export class Beachball {
       plunge *= -1;
       azimuth += Math.PI;
     }
-    azimuth = _0To2Pi(azimuth);
+    azimuth = zeroToTwoPi(azimuth);
 
     r = Math.sqrt(1 - Math.sin(plunge));
     x = r * Math.sin(azimuth);
@@ -415,10 +394,10 @@ export class Beachball {
         az = 0;
         takeoff = 0;
       } else {
-        az = _0To2Pi(Math.atan2(xe, xn));
+        az = zeroToTwoPi(Math.atan2(xe, xn));
         takeoff = Math.acos(xz / Math.sqrt(xz * xz + xn * xn + xe * xe));
         if (takeoff > Math.PI / 2) {
-          az = _0To2Pi(az + Math.PI);
+          az = zeroToTwoPi(az + Math.PI);
           takeoff = Math.PI - takeoff;
         }
       }
